@@ -1,14 +1,11 @@
 "use client";
-import Image from "next/image";
 import { useEffect, useState } from "react";
-import User from "./Class/User";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Sword, Shield, Heart, Zap, Brain, Feather, Eye, Rabbit, Speech, Sparkles } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
 
 import { Input } from "@/components/ui/input";
@@ -16,7 +13,7 @@ import { Input } from "@/components/ui/input";
 //Synchro skills
 
 export default function Home() {
-    const [whichSkills, updateWhichSkills] = useState<any>([]);
+    const [whichSkills, updateWhichSkills] = useState<Array<string>>([]);
     const [isTrue, updateIsTrue] = useState(false);
     const races = ["Human", "Orc", "Elf", "Dwarf", "Beastmen", "Skaven", "Lizzardmen", "Tiefling", "Dragonborn", "Gnome"];
     const costs = [0, 1, 1, 2, 2, 3, 3, 4, 5, 6, 8, 10, 12, 15, 20];
@@ -138,8 +135,8 @@ export default function Home() {
     });
 
     useEffect(() => {
-        var newCharacter = character;
-        let modif = Math.floor((6 - 10) / 2);
+        const newCharacter = character;
+        const modif = Math.floor((6 - 10) / 2);
         newCharacter.ac = modif + 2;
         newCharacter.hp = newCharacter.level * (modif + 5);
         newCharacter.parry = 10 + modif + newCharacter.proficiency;
@@ -149,7 +146,7 @@ export default function Home() {
     }, []);
 
     function updateLvl(newLvl: number) {
-        let newCharacter = character;
+        const newCharacter = character;
         if (newCharacter.level > newLvl && newCharacter.experience - 20 >= 0) {
             newCharacter.experience -= 20;
             newCharacter.level = newLvl;
@@ -162,8 +159,7 @@ export default function Home() {
     }
 
     function checkModifier(newCharacter: any, id: number) {
-        let modif = Math.floor((newCharacter.abilities[id].score - 10) / 2);
-        let newPerfom = 0;
+        const modif = Math.floor((newCharacter.abilities[id].score - 10) / 2);
         newCharacter.abilities[id].modifier = modif;
 
         //Setting ac to character AC = END MODIF
@@ -187,7 +183,7 @@ export default function Home() {
     }
 
     function updateAbility(abilityLevel: number, id: number) {
-        let newCharacter = character;
+        const newCharacter = character;
 
         if (newCharacter.abilities[id].score < abilityLevel && newCharacter.experience - costs[newCharacter.abilities[id].score - 6] > 0) {
             newCharacter.abilities[id].score += 1;
@@ -199,10 +195,10 @@ export default function Home() {
         checkModifier(newCharacter, id);
     }
 
-    function selectedTable(item: any, id: any) {
+    function selectedTable(item: string, id: number) {
         let allSkills = whichSkills;
-        let newCharacter = character;
-        let modif = Math.floor((newCharacter.abilities[id].score - 10) / 2);
+        const newCharacter = character;
+        const modif = Math.floor((newCharacter.abilities[id].score - 10) / 2);
 
         if (allSkills.includes(item)) {
             allSkills = [...allSkills].filter((oneSkill) => oneSkill !== item);
@@ -225,7 +221,7 @@ export default function Home() {
     }
 
     function updateFullCharacter(newCharacter: any) {
-        var updatedCharacter = { ...newCharacter };
+        const updatedCharacter = { ...newCharacter };
         updateCharacter(updatedCharacter);
     }
 
