@@ -136,12 +136,7 @@ export default function Home() {
 
     useEffect(() => {
         const newCharacter = character;
-        const modif = Math.floor((6 - 10) / 2);
-        newCharacter.ac = modif + 2;
-        newCharacter.hp = newCharacter.level * (modif + 5);
-        newCharacter.parry = 10 + modif + newCharacter.proficiency;
-        newCharacter.dodge = modif + newCharacter.proficiency;
-        updateFullCharacter(newCharacter);
+        Refresh(newCharacter);
         updateIsTrue(true);
     }, []);
 
@@ -155,31 +150,7 @@ export default function Home() {
             newCharacter.level = newLvl;
         }
         newCharacter.proficiency = ProficiencyLevels[newLvl - 1];
-        updateFullCharacter(newCharacter);
-    }
-
-    function checkModifier(newCharacter: any, id: number) {
-        const modif = Math.floor((newCharacter.abilities[id].score - 10) / 2);
-        newCharacter.abilities[id].modifier = modif;
-
-        //Setting ac to character AC = END MODIF
-        if (newCharacter.abilities[id].shortName == "END") {
-            newCharacter.ac = modif + 2;
-        }
-        //Setting HP to character HP = LEVEL * (CON MODIF + 5);
-        if (newCharacter.abilities[id].shortName == "CON") {
-            newCharacter.hp = newCharacter.level * (modif + 5);
-        }
-        //Setting PA to character
-        if (newCharacter.abilities[id].shortName == "DEX") {
-            newCharacter.parry = 10 + modif + newCharacter.proficiency;
-        }
-        //Setting DA to character
-        if (newCharacter.abilities[id].shortName == "AGI") {
-            newCharacter.dodge = modif + newCharacter.proficiency;
-        }
-
-        updateFullCharacter(newCharacter);
+        Refresh(newCharacter);
     }
 
     function updateAbility(abilityLevel: number, id: number) {
@@ -192,13 +163,12 @@ export default function Home() {
             newCharacter.experience += costs[newCharacter.abilities[id].score - 6];
             newCharacter.abilities[id].score -= 1;
         }
-        checkModifier(newCharacter, id);
+        Refresh(newCharacter);
     }
 
     function selectedTable(item: string, id: number) {
         let allSkills = whichSkills;
         const newCharacter = character;
-        const modif = Math.floor((newCharacter.abilities[id].score - 10) / 2);
 
         if (allSkills.includes(item)) {
             allSkills = [...allSkills].filter((oneSkill) => oneSkill !== item);
@@ -207,17 +177,49 @@ export default function Home() {
             allSkills.push(item);
             updateWhichSkills([...allSkills]);
         }
+        console.log(allSkills);
+        Refresh(newCharacter, allSkills);
+    }
 
-        newCharacter.skills.map((skill: any) => {
+    function Refresh(newCharacter: any, allSkills?: any) {
+        let newPerfom = 0;
+        newCharacter.abilities.map((abilityOne: any) => {
+            const modif = Math.floor((abilityOne.score - 10) / 2);
+            abilityOne.modifier = modif;
+
+            //Setting ac to character AC = END MODIF
+            if (abilityOne.shortName == "END") {
+                newCharacter.ac = modif + 2;
+            }
+            //Setting HP to character HP = LEVEL * (CON MODIF + 5);
+            if (abilityOne.shortName == "CON") {
+                newCharacter.hp = newCharacter.level * (modif + 5);
+            }
+            //Setting PA to character
+            if (abilityOne.shortName == "DEX") {
+                newCharacter.parry = 10 + modif + newCharacter.proficiency;
+            }
+            //Setting DA to character
+            if (abilityOne.shortName == "AGI") {
+                newCharacter.dodge = modif + newCharacter.proficiency;
+            }
+        });
+
+        newCharacter.skills.map((skill: any, ids: number) => {
+            const modif = Math.floor((newCharacter.abilities[ids].score - 10) / 2);
             skill.ability.map((oneAbility: any) => {
-                let newPerfom = 0;
-                if (allSkills.includes(oneAbility.name)) {
+                newPerfom = 0;
+                if (whichSkills.includes(oneAbility.name)) {
                     newPerfom = 2;
+                }
+                if (!allSkills?.includes(oneAbility.name) && allSkills) {
+                    newPerfom = 0;
                 }
                 oneAbility.value = modif + newPerfom;
             });
         });
-        checkModifier(newCharacter, id);
+
+        updateFullCharacter(newCharacter);
     }
 
     function updateFullCharacter(newCharacter: any) {
