@@ -166,7 +166,7 @@ export default function Home() {
         Refresh(newCharacter);
     }
 
-    function selectedTable(item: string, id: number) {
+    function selectedTable(item: string) {
         let allSkills = whichSkills;
         const newCharacter = character;
 
@@ -331,7 +331,7 @@ export default function Home() {
                             </div>
                             <h3 className="text-xl font-bold">Skills</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {character.skills.map((oneSkill, id): any => (
+                                {character.skills.map((oneSkill): any => (
                                     <Table key={oneSkill.name}>
                                         <TableHeader>
                                             <TableRow>
@@ -352,7 +352,7 @@ export default function Home() {
                                                             {skill.value}
                                                         </a>
                                                         <Switch
-                                                            onCheckedChange={() => selectedTable(skill.name, id)}
+                                                            onCheckedChange={() => selectedTable(skill.name)}
                                                             disabled={whichSkills.length >= 2 && !whichSkills.includes(skill.name)}
                                                         />
                                                     </TableCell>
